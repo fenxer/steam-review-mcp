@@ -10,30 +10,9 @@ export interface GetGameReviewsInput {
   num_per_page?: number;
 }
 
-// 游戏评测信息
+// 游戏评测信息 - 只保留 review 字段
 export interface GameReview {
-  recommendationid: string;
-  author: {
-    steamid: string;
-    num_games_owned: number;
-    num_reviews: number;
-    playtime_forever: number;
-    playtime_last_two_weeks: number;
-    playtime_at_review: number;
-    last_played: number;
-  };
-  language: string;
   review: string;
-  timestamp_created: number;
-  timestamp_updated: number;
-  voted_up: boolean;
-  votes_up: number;
-  votes_funny: number;
-  weighted_vote_score: number;
-  comment_count: number;
-  steam_purchase: boolean;
-  received_for_free: boolean;
-  written_during_early_access: boolean;
 }
 
 // 游戏评测的返回结果

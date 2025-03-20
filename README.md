@@ -79,51 +79,27 @@ getGameInfo({ appid: '730' })
 
 ## 返回数据结构
 
-### getGameReviews 返回
+### getGameReviews 返回 (GameReviewsResponse)
 
 ```javascript
 {
-  success: 1,
-  review_score: 8,
-  review_score_desc: "特别好评",
-  total_positive: 1234567,
-  total_negative: 12345,
-  reviews: [
-    {
-      recommendationid: "123456789",
-      author: {
-        steamid: "76561198123456789",
-        num_games_owned: 100,
-        num_reviews: 5,
-        playtime_forever: 1000,
-        playtime_last_two_weeks: 10,
-        playtime_at_review: 800,
-        last_played: 1612345678
-      },
-      language: "schinese",
-      review: "这是一个评测内容...",
-      timestamp_created: 1612345678,
-      timestamp_updated: 1612345678,
-      voted_up: true,
-      votes_up: 10,
-      votes_funny: 2,
-      weighted_vote_score: 0.8,
-      comment_count: 3,
-      steam_purchase: true,
-      received_for_free: false,
-      written_during_early_access: false
-    }
-    // 更多评测...
+  success: 1, // 如果查询成功，为1
+  review_score: 8, // 评测分数
+  review_score_desc: "特别好评", // 评测分数描述
+  total_positive: 1234567, // 正面评测的总数
+  total_negative: 12345, // 负面评测的总数
+  reviews: [ // 评测列表
+    review: "评测内容...", 
   ]
 }
 ```
 
-### getGameInfo 返回
+### getGameInfo 返回 (GameInfoResponse)
 
 ```javascript
 {
-  name: "Counter-Strike 2",
-  detailed_description: "游戏的详细描述内容..."
+  name: "Counter-Strike 2", // 游戏名称
+  detailed_description: "游戏的详细描述内容..." // 游戏详细描述
 }
 ```
 
