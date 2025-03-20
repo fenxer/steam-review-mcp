@@ -8,6 +8,7 @@
 
 - 获取游戏评测（正面/负面评价数量、评测分数、评测内容等）
 - 获取游戏基本信息（名称、详细描述）
+- 分析游戏评测，总结游戏的优缺点
 
 ## 安装
 
@@ -17,9 +18,13 @@ npm install steam-review-mcp
 
 ## 使用方法
 
+### 工具 (Tools)
+
 这个 MCP 服务提供了 `get_steam_review` 工具，可以通过传入 Steam 游戏的 appid 来获取评测和游戏信息。
 
-### 参数
+详细可查看 Steamwork API: [User Reviews - Get List](https://partner.steamgames.com/doc/store/getreviews)
+
+#### 参数
 
 - `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
 - `filter`（可选，默认 "all"）：过滤类型
@@ -30,7 +35,7 @@ npm install steam-review-mcp
 - `purchase_type`（可选，默认 "all"）：购买类型
 - `num_per_page`（可选，默认 50）：每页结果数量
 
-### 返回数据
+#### 返回数据
 
 返回的数据包含两部分：
 
@@ -45,6 +50,26 @@ npm install steam-review-mcp
 2. `game_info`：
    - `name`：游戏名称
    - `detailed_description`：游戏详细描述
+
+### 提示模板 (Prompts)
+
+#### summarize-reviews
+
+用于游戏的整体分析游戏评测，总结游戏的优缺点。
+
+##### 参数
+
+- `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
+
+
+#### recent-reviews-analysis
+
+用于分析游戏的最近评测，总结游戏的当前状态和玩家反馈。
+
+##### 参数
+
+- `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
+
 
 ## 开发
 
