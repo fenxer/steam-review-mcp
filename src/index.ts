@@ -5,6 +5,36 @@ import { z } from "zod";
 const STEAM_API_BASE = "https://store.steampowered.com/";
 const USER_AGENT = "steam-mcp/1.0";
 
+// Helper function to clean and format review text for JSON
+function cleanReviewText(text: string): string {
+  if (!text) return "";
+  
+  // Remove HTML tags
+  let cleanText = text.replace(/<\/?[^>]+(>|$)/g, "");
+  
+  // Decode common HTML entities
+  cleanText = cleanText.replace(/&amp;/g, "&")
+                       .replace(/&lt;/g, "<")
+                       .replace(/&gt;/g, ">")
+                       .replace(/&quot;/g, "")
+                       .replace(/&#39;/g, "")
+                       .replace(/&nbsp;/g, " ");
+  
+  // Handle newlines and other control characters
+  cleanText = cleanText.replace(/\r\n/g, "\\n")
+                       .replace(/\n/g, "\\n")
+                       .replace(/\r/g, "\\n");
+  
+  // Remove quotes
+  cleanText = cleanText.replace(/["']/g, "");
+  
+  // Replace multiple spaces with a single space
+  cleanText = cleanText.replace(/\s+/g, " ");
+  
+  // Trim extra spaces
+  return cleanText.trim();
+}
+
 // Create server instance
 const server = new McpServer({
   name: "steam-review-mcp",
@@ -63,7 +93,7 @@ server.tool(
         review_score_desc: reviewsData.query_summary?.review_score_desc,
         total_positive: reviewsData.query_summary?.total_positive,
         total_negative: reviewsData.query_summary?.total_negative,
-        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => review.review) : []
+        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => cleanReviewText(review.review)) : []
       };
       
       // Fetch game info
@@ -91,7 +121,7 @@ server.tool(
         content: [
           {
             type: "text",
-            text: JSON.stringify({ game_reviews, game_info })
+            text: JSON.stringify({ game_reviews, game_info }, null, 2)
           }
         ]
       };
@@ -136,7 +166,7 @@ server.prompt(
         review_score_desc: reviewsData.query_summary?.review_score_desc,
         total_positive: reviewsData.query_summary?.total_positive,
         total_negative: reviewsData.query_summary?.total_negative,
-        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => review.review) : []
+        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => cleanReviewText(review.review)) : []
       };
       
       // Fetch game info
@@ -181,8 +211,8 @@ server.prompt(
                     - Con 2
                     The unordered list format should be arranged from top to bottom according to the **number of times each pro or con is mentioned**.
 
-                    Game Info: ${JSON.stringify(game_info)}
-                    Game Reviews: ${JSON.stringify(game_reviews.reviews)}`
+                    Game Info: ${JSON.stringify(game_info, null, 2)}
+                    Game Reviews: ${JSON.stringify(game_reviews.reviews, null, 2)}`
           }
         }]
       };
@@ -227,7 +257,7 @@ server.prompt(
         review_score_desc: reviewsData.query_summary?.review_score_desc,
         total_positive: reviewsData.query_summary?.total_positive,
         total_negative: reviewsData.query_summary?.total_negative,
-        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => review.review) : []
+        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => cleanReviewText(review.review)) : []
       };
       
       // Fetch game info
@@ -275,8 +305,8 @@ server.prompt(
                   - Key point about current state of the game
                   The unordered list format should be arranged from top to bottom according to the **number of times each point is mentioned**.
 
-                  Game Info: ${JSON.stringify(game_info)}
-                  Game Reviews: ${JSON.stringify(game_reviews.reviews)}`
+                  Game Info: ${JSON.stringify(game_info, null, 2)}
+                  Game Reviews: ${JSON.stringify(game_reviews.reviews, null, 2)}`
           }
         }]
       };
