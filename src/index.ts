@@ -14,13 +14,13 @@ const server = new McpServer({
 // Define the schema for the input parameters
 const SteamReviewParamsSchema = {
   appid: z.string().describe("Steam application ID"),
-  filter: z.string().default("all").describe("Filter type"),
-  language: z.string().default("all").describe("Language filter"),
-  day_range: z.number().default(365).describe("Day range"),
-  cursor: z.string().default("*").describe("Cursor"),
-  review_type: z.string().default("all").describe("Review type"),
-  purchase_type: z.string().default("all").describe("Purchase type"),
-  num_per_page: z.number().default(50).describe("Number of results per page"),
+  filter: z.string().default("all").describe("recent: sorted by creation time, updated: sorted by last updated time,all: (default) sorted by helpfulness, with sliding windows based on day_range parameter, will always find results to return."),
+  language: z.string().default("all").describe("Language filter, only steam API language code"),
+  day_range: z.number().default(365).describe("range from now to n days ago to look for helpful reviews. Only applicable for the “all” filter."),
+  cursor: z.string().default("*").describe("reviews are returned in batches of 20, so pass * for the first set, then the value of cursor that was returned in the response for the next set, etc. Note that cursor values may contain characters that need to be URLEncoded for use in the querystring."),
+  review_type: z.string().default("all").describe("all:all reviews (default), positive: only positive reviews, negative: only negative reviews"),
+  purchase_type: z.string().default("steam").describe("all: all reviews, non_steam_purchase: reviews written by users who did not pay for the product on Steam,steam: reviews written by users who paid for the product on Steam (default)"),
+  num_per_page: z.number().default(30).describe("Number of reviews, max 100, default 30"),
 };
 
 // Add the tool to get steam reviews
@@ -50,14 +50,14 @@ server.tool(
       
       const reviewsData = await reviewsResponse.json();
       
-      // Extract required review information
+      // Extract required review information and review texts
       const game_reviews = {
         success: reviewsData.success,
         review_score: reviewsData.query_summary?.review_score,
         review_score_desc: reviewsData.query_summary?.review_score_desc,
         total_positive: reviewsData.query_summary?.total_positive,
         total_negative: reviewsData.query_summary?.total_negative,
-        reviews: reviewsData.reviews || []
+        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => review.review) : []
       };
       
       // Fetch game info

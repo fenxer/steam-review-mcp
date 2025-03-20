@@ -40,7 +40,7 @@ npm install steam-review-mcp
    - `review_score_desc`：评测分数描述
    - `total_positive`：正面评测总数
    - `total_negative`：负面评测总数
-   - `reviews`：评测内容列表
+   - `reviews`：所有评测的文本内容（不包含其他元数据）
 
 2. `game_info`：
    - `name`：游戏名称
