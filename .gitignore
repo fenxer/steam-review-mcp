@@ -128,19 +128,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-# TypeScript output
-dist/
-
-# IDE/Editor folders
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS specific
 .DS_Store
-Thumbs.db
-
-# Coverage directory
-coverage/

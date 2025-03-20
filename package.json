@@ -1,32 +1,37 @@
 {
   "name": "steam-review-mcp",
-  "version": "0.1.0",
-  "description": "MCP service for retrieving Steam game reviews and information",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "version": "1.0.0",
+  "description": "Get reviews from steam store with appid",
+  "main": "build/index.js",
+  "type": "module",
   "scripts": {
-    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "npm run build"
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "tsc && node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fenxer/steam-review-mcp.git"
   },
   "keywords": [
     "mcp",
     "steam",
-    "reviews",
-    "game"
+    "review",
+    "modelcontextprotocol"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fenxer/steam-review-mcp/issues"
+  },
+  "homepage": "https://github.com/fenxer/steam-review-mcp#readme",
   "dependencies": {
-    "axios": "^1.6.2",
-    "node-fetch": "^2.6.7"
+    "@modelcontextprotocol/sdk": "^1.7.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.4",
-    "@types/node": "^20.10.0",
-    "typescript": "^5.2.2"
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
   }
 }

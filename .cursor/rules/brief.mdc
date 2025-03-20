@@ -1,0 +1,37 @@
+---
+description: MCP 项目简介
+globs: 
+alwaysApply: false
+---
+我给你准备了 MCP 官方文档，请你根据文档，规范地写一个 MCP 服务。你要遵守 Core MCP Concepts：
+Resources: File-like data that can be read by clients (like API responses or file contents)
+Tools: Functions that can be called by the LLM (with user approval)
+Prompts: Pre-written templates that help users accomplish specific tasks
+
+开发完成后会上传到 npm 上，方便他人快捷使用。
+
+===
+
+这个 MCP 功能是从 steam 某个游戏页面获取评价并返回相应格式的 json。它使用的是 GET store.steampowered.com/appreviews/<appid>?json=1(@https://partner.steamgames.com/doc/store/getreviews)这个 API ,他可以传入很多参数，其中对于用户来说，appid 是比如手动输入的。其它参数如未从 AI 那边指定的话，我会给出默认值：
+
+filter 默认 all，language 默认 all，day_range默认365，cursor默认为*，review_type 默认为 all，purchase_type 默认为 all，num_per_page 默认为 50。
+
+返回的值中，我们也只选择一些有用的：
+success - 如果查询成功，为 1。
+review_score - 评测分数。
+review_score_desc - 评测分数描述。
+total_positive - 正面评测的总数。
+total_negative - 负面评测的总数。
+reviews 下的每组 review 信息 - 所有评测文本。
+
+将以上信息放到 game_reviews 中。
+
+===
+
+这个 appid 还有其他用处，用它 GET https://store.steampowered.com/api/appdetails?appids=<appid> 这个 API，拿到返回的 name 和 detailed_description，json 路径为[appid].data.name 和 [appid].data.detailed_description。
+
+将以上信息放到 game_info 中。
+
+===
+
+最终用户可以通过 tool get_steam_review 命令获取 包含上述 game_reviews 和 game_info 的json文件。
