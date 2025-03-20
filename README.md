@@ -25,7 +25,7 @@ or add：
 ```json
 {
   "mcpServers": {
-    "github.com/fenxer/steam-review-mcp": {
+    "steam-review-mcp": {
       "command": "npx",
       "args": [
         "steam-review-mcp"
