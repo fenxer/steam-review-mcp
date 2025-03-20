@@ -1,0 +1,77 @@
+{
+  "schema_version": "v2",
+  "name_for_human": "Steam游戏评测",
+  "name_for_model": "SteamGameReviews",
+  "description_for_human": "获取Steam游戏的评测和基本信息。",
+  "description_for_model": "这个工具可以帮助用户获取Steam游戏的评测和基本信息。用户需要提供游戏的appid，工具将返回评测和游戏详情。",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "function"
+  },
+  "logo_url": "https://store.steampowered.com/favicon.ico",
+  "contact_email": "contact@example.com",
+  "legal_info_url": "http://www.example.com/legal",
+  "functions": [
+    {
+      "name": "getGameReviews",
+      "description": "获取Steam游戏的评测信息",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "appid": {
+            "type": "string",
+            "description": "Steam游戏的ID，例如'730'表示CS:GO"
+          },
+          "filter": {
+            "type": "string",
+            "enum": ["all", "recent", "updated"],
+            "description": "评测筛选条件，默认为'all'"
+          },
+          "language": {
+            "type": "string",
+            "description": "评测的语言，默认为'all'"
+          },
+          "day_range": {
+            "type": "integer",
+            "description": "筛选最近多少天的评测，默认为365"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "用于分页的游标，默认为'*'"
+          },
+          "review_type": {
+            "type": "string",
+            "enum": ["all", "positive", "negative"],
+            "description": "评测类型，默认为'all'"
+          },
+          "purchase_type": {
+            "type": "string",
+            "enum": ["all", "steam", "non_steam_purchase"],
+            "description": "购买类型，默认为'all'"
+          },
+          "num_per_page": {
+            "type": "integer",
+            "description": "每页返回的评测数量，默认为50"
+          }
+        },
+        "required": ["appid"]
+      }
+    },
+    {
+      "name": "getGameInfo",
+      "description": "获取Steam游戏的基本信息",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "appid": {
+            "type": "string",
+            "description": "Steam游戏的ID，例如'730'表示CS:GO"
+          }
+        },
+        "required": ["appid"]
+      }
+    }
+  ]
+} 
