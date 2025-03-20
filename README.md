@@ -1,85 +1,87 @@
 # Steam Review MCP
 
-使用 Model Context Protocol (MCP) 的 Steam 游戏评测查询服务。
+**English** | [中文](./README.zh.md)
 
-## 功能
+Access Steam game reviews using Model Context Protocol (MCP).
 
-这个 MCP 服务可以帮助 AI 模型获取 Steam 游戏的评测和游戏信息：
+## Features
 
-- 获取游戏评测（正面/负面评价数量、评测分数、评测内容等）
-- 获取游戏基本信息（名称、详细描述）
-- 分析游戏评测，总结游戏的优缺点
+Helps LLMs retrieve Steam game reviews and information:
 
-## 安装
+- Get game reviews (positive/negative counts, review scores, review content, etc.)
+- Get game basic information (name, detailed description)
+- Analyze game reviews and summarize pros and cons
+
+## Installation
 
 ```bash
 npm install steam-review-mcp
 ```
 
-## 使用方法
+## Usage
 
-### 工具 (Tools)
+### Tools
 
-这个 MCP 服务提供了 `get_steam_review` 工具，可以通过传入 Steam 游戏的 appid 来获取评测和游戏信息。
+This MCP service provides the `get_steam_review` tool, which retrieves reviews and game information by passing a Steam game appid.
 
-详细可查看 Steamwork API: [User Reviews - Get List](https://partner.steamgames.com/doc/store/getreviews)
+For more details, check the Steamwork API: [User Reviews - Get List](https://partner.steamgames.com/doc/store/getreviews)
 
-#### 参数
+#### Parameters
 
-- `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
-- `filter`（可选，默认 "all"）：过滤类型
-- `language`（可选，默认 "all"）：语言过滤
-- `day_range`（可选，默认 365）：评测天数范围
-- `cursor`（可选，默认 "*"）：游标
-- `review_type`（可选，默认 "all"）：评测类型
-- `purchase_type`（可选，默认 "all"）：购买类型
-- `num_per_page`（可选，默认 50）：每页结果数量
+- `appid` (required): Steam game ID, e.g., `570` (Dota 2)
+- `filter` (optional, default "all"): Filter type
+- `language` (optional, default "all"): Language filter
+- `day_range` (optional, default 365): Review day range
+- `cursor` (optional, default "*"): Cursor
+- `review_type` (optional, default "all"): Review type
+- `purchase_type` (optional, default "all"): Purchase type
+- `num_per_page` (optional, default 50): Number of results per page
 
-#### 返回数据
+#### Return Data
 
-返回的数据包含两部分：
+The returned data contains two parts:
 
-1. `game_reviews`：
-   - `success`：查询是否成功
-   - `review_score`：评测分数
-   - `review_score_desc`：评测分数描述
-   - `total_positive`：正面评测总数
-   - `total_negative`：负面评测总数
-   - `reviews`：所有评测的文本内容（不包含其他元数据）
+1. `game_reviews`:
+   - `success`: Whether the query was successful
+   - `review_score`: Review score
+   - `review_score_desc`: Review score description
+   - `total_positive`: Total positive reviews
+   - `total_negative`: Total negative reviews
+   - `reviews`: All review text content (without other metadata)
 
-2. `game_info`：
-   - `name`：游戏名称
-   - `detailed_description`：游戏详细描述
+2. `game_info`:
+   - `name`: Game name
+   - `detailed_description`: Detailed game description
 
-### 提示模板 (Prompts)
+### Prompts
 
 #### summarize-reviews
 
-用于游戏的整体分析游戏评测，总结游戏的优缺点。
+For overall game review analysis, summarizing the pros and cons of the game.
 
-##### 参数
+##### Parameters
 
-- `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
+- `appid` (required): Steam game ID, e.g., `570` (Dota 2)
 
 
 #### recent-reviews-analysis
 
-用于分析游戏的最近评测，总结游戏的当前状态和玩家反馈。
+For analyzing recent game reviews, summarizing the current state of the game and player feedback.
 
-##### 参数
+##### Parameters
 
-- `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
+- `appid` (required): Steam game ID, e.g., `570` (Dota 2)
 
 
-## 开发
+## Development
 
 ```bash
-# 安装依赖
+# Install dependencies
 npm install
 
-# 构建项目
+# Build project
 npm run build
 
-# 运行服务
+# Run service
 npm start
 ```

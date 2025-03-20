@@ -195,7 +195,7 @@ server.prompt(
           role: "user",
           content: {
             type: "text",
-            text: `You are an experienced game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **pros** and **cons** from game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
+            text: `You are an experienced video game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **pros** and **cons** from game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
                     ====
                     # Features
                     - Don't extract too much information from a single review; try to summarize from **multiple reviews and multiple perspectives**.
@@ -286,7 +286,7 @@ server.prompt(
           role: "user",
           content: {
             type: "text",
-            text: `You are an experienced game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **recent performance and player feedback** from the most recent game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
+            text: `You are an experienced video game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **recent performance and player feedback** from the most recent game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
                   ====
                   # Features
                   - Don't extract too much information from a single review; try to summarize from **multiple reviews and multiple perspectives**.
