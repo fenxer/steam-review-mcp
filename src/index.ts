@@ -118,12 +118,14 @@ server.tool(
         detailed_description: infoData[params.appid]?.data?.detailed_description
       };
       
-      // Return combined result in the format expected by MCP
+      // To be compatible with models such as DeepSeek R1 and DeepSeek V3, convert the format
+      const formattedJsonData = JSON.stringify({ game_reviews, game_info }, null, 2);
+      
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify({ game_reviews, game_info }, null, 2)
+            text: formattedJsonData
           }
         ]
       };
