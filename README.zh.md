@@ -12,6 +12,29 @@
 - 获取游戏基本信息（名称、详细描述）
 - 分析游戏评测，总结游戏的优缺点
 
+## 安装
+
+直接使用 npx 运行：
+
+```bash
+npx steam-review-mcp
+```
+
+或自行添加：
+
+```json
+{
+  "mcpServers": {
+    "github.com/fenxer/steam-review-mcp": {
+      "command": "npx",
+      "args": [
+        "steam-review-mcp"
+      ]
+    }
+  }
+}
+```
+
 ## 使用方法
 
 ### 工具 (Tools)

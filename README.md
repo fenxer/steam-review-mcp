@@ -12,6 +12,29 @@ Helps LLMs retrieve Steam game reviews and information:
 - Get game basic information (name, detailed description)
 - Analyze game reviews and summarize pros and cons
 
+## Installation
+
+Run it directly with npx:
+
+```bash
+npx steam-review-mcp
+```
+
+or add：
+
+```json
+{
+  "mcpServers": {
+    "github.com/fenxer/steam-review-mcp": {
+      "command": "npx",
+      "args": [
+        "steam-review-mcp"
+      ]
+    }
+  }
+}
+```
+
 ## Usage
 
 ### Tools

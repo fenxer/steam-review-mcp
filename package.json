@@ -4,11 +4,15 @@
   "description": "Get reviews from steam store with appid",
   "main": "build/index.js",
   "type": "module",
+  "bin": {
+    "steam-review-mcp": "./build/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node build/index.js",
-    "dev": "tsc && node build/index.js"
+    "dev": "tsc && node build/index.js",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -33,5 +37,11 @@
   "devDependencies": {
     "@types/node": "^22.13.10",
     "typescript": "^5.8.2"
+  },
+  "files": [
+    "build/**/*"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
