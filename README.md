@@ -12,12 +12,6 @@ Helps LLMs retrieve Steam game reviews and information:
 - Get game basic information (name, detailed description)
 - Analyze game reviews and summarize pros and cons
 
-## Installation
-
-```bash
-npm install steam-review-mcp
-```
-
 ## Usage
 
 ### Tools
@@ -25,19 +19,6 @@ npm install steam-review-mcp
 This MCP service provides the `get_steam_review` tool, which retrieves reviews and game information by passing a Steam game appid.
 
 For more details, check the Steamwork API: [User Reviews - Get List](https://partner.steamgames.com/doc/store/getreviews)
-
-#### Parameters
-
-- `appid` (required): Steam game ID, e.g., `570` (Dota 2)
-- `filter` (optional, default "all"): Filter type
-- `language` (optional, default "all"): Language filter
-- `day_range` (optional, default 365): Review day range
-- `cursor` (optional, default "*"): Cursor
-- `review_type` (optional, default "all"): Review type
-- `purchase_type` (optional, default "all"): Purchase type
-- `num_per_page` (optional, default 50): Number of results per page
-
-#### Return Data
 
 The returned data contains two parts:
 

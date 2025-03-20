@@ -12,12 +12,6 @@
 - 获取游戏基本信息（名称、详细描述）
 - 分析游戏评测，总结游戏的优缺点
 
-## 安装
-
-```bash
-npm install steam-review-mcp
-```
-
 ## 使用方法
 
 ### 工具 (Tools)
@@ -25,19 +19,6 @@ npm install steam-review-mcp
 这个 MCP 服务提供了 `get_steam_review` 工具，可以通过传入 Steam 游戏的 appid 来获取评测和游戏信息。
 
 详细可查看 Steamwork API: [User Reviews - Get List](https://partner.steamgames.com/doc/store/getreviews)
-
-#### 参数
-
-- `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
-- `filter`（可选，默认 "all"）：过滤类型
-- `language`（可选，默认 "all"）：语言过滤
-- `day_range`（可选，默认 365）：评测天数范围
-- `cursor`（可选，默认 "*"）：游标
-- `review_type`（可选，默认 "all"）：评测类型
-- `purchase_type`（可选，默认 "all"）：购买类型
-- `num_per_page`（可选，默认 50）：每页结果数量
-
-#### 返回数据
 
 返回的数据包含两部分：
 
