@@ -64,6 +64,7 @@ const SteamReviewParamsSchema = {
 // Add the tool to get steam reviews
 server.tool(
   "get_steam_review",
+  "Retrieves reviews and game information for a specific Steam application. Returns formatted review data including review scores, positive/negative counts, review texts, and basic game information.",
   SteamReviewParamsSchema,
   async (params) => {
     try {
