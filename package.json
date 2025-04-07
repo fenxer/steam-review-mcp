@@ -1,6 +1,6 @@
 {
   "name": "steam-review-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Get reviews from steam store with appid",
   "main": "build/index.js",
   "type": "module",
