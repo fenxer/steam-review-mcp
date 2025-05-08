@@ -6,6 +6,10 @@
 
 Access Steam game reviews using Model Context Protocol (MCP).
 
+<a href="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp/badge" alt="Steam Review MCP server" />
+</a>
+
 ## Features
 
 Helps LLMs retrieve Steam game reviews and information:
