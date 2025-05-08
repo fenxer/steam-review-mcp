@@ -1,10 +1,14 @@
 # Steam Review MCP
 
-[![smithery badge](https://smithery.ai/badge/@fenxer/steam-review-mcp)](https://smithery.ai/server/@fenxer/steam-review-mcp)
-
 **English** | [中文](./README.zh.md)
 
 Access Steam game reviews using Model Context Protocol (MCP).
+
+[![smithery badge](https://smithery.ai/badge/@fenxer/steam-review-mcp)](https://smithery.ai/server/@fenxer/steam-review-mcp)
+
+<a href="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp/badge" />
+</a>
 
 ## Features
 
