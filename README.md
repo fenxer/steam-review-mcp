@@ -1,5 +1,7 @@
 # Steam Review MCP
 
+[![smithery badge](https://smithery.ai/badge/@fenxer/steam-review-mcp)](https://smithery.ai/server/@fenxer/steam-review-mcp)
+
 **English** | [中文](./README.zh.md)
 
 Access Steam game reviews using Model Context Protocol (MCP).
@@ -13,6 +15,14 @@ Helps LLMs retrieve Steam game reviews and information:
 - Analyze game reviews and summarize pros and cons
 
 ## Installation
+
+### Installing via Smithery
+
+To install Steam Review for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@fenxer/steam-review-mcp):
+
+```bash
+npx -y @smithery/cli install @fenxer/steam-review-mcp --client claude
+```
 
 Run it directly with npx:
 
