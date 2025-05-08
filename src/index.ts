@@ -325,5 +325,3 @@ server.prompt(
 // Start the server
 const transport = new StdioServerTransport();
 server.connect(transport).catch(console.error);
-
-console.log("Steam Review MCP Server started");
