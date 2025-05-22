@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "steam-review-mcp": {
+      "type": "stdio",
+      "command": "steam-review-mcp",
+      "args": []
+    }
+  }
+}

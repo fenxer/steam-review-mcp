@@ -67,7 +67,6 @@ npx steam-review-mcp
 
 - `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
 
-
 #### recent-reviews-analysis
 
 用于分析游戏的最近评测，总结游戏的当前状态和玩家反馈。
@@ -76,16 +75,47 @@ npx steam-review-mcp
 
 - `appid`（必需）：Steam 游戏的 ID，例如 `570`（Dota 2）
 
+## 開發指南
+為了確保所有開發者使用一致的工具和版本，我們強烈建議遵循以下指南。
 
-## 开发
+### 環境設定與套件管理器
+請務必檢查 package.json 檔案中的 packageManager 欄位，並使用 Corepack 或明確指定的相應套件管理器版本。
 
-```bash
-# 安装依赖
-npm install
+#### 初次設定 Corepack (可選):
 
-# 构建项目
-npm run build
+1. 檢查 Corepack 是否已安裝
 
-# 运行服务
-npm start
-``` 
+    對於 Node.js v18 及更新版本，Corepack 應該是內建的。您可以透過以下指令檢查：
+
+```
+npm list -g --depth=0 | grep corepack
+```
+
+2. 安裝 Corepack
+
+    如果上述指令沒有顯示 Corepack，您可以透過以下指令全域安裝最新版本的 Corepack：
+
+```
+npm install corepack@latest -g
+```
+
+如果在此過程中或後續啟用 Corepack 時出現任何錯誤，請嘗試執行上述指令來解決。
+
+3. 啟用 Corepack 對特定套件管理器的管理
+
+    一旦 Corepack 安裝並存在，您需要為專案所使用的套件管理器啟用其自動化管理。例如，如果我們的專案使用 pnpm（請檢查 package.json 中的 packageManager 欄位以確認），請執行：
+
+```
+corepack enable pnpm
+```
+
+### 開始
+1. 安裝依賴
+```
+pnpm install
+```
+
+2. 啟動開發伺服器
+```
+pnpm dev
+```
