@@ -81,7 +81,6 @@ For overall game review analysis, summarizing the pros and cons of the game.
 
 - `appid` (required): Steam game ID, e.g., `570` (Dota 2)
 
-
 #### recent-reviews-analysis
 
 For analyzing recent game reviews, summarizing the current state of the game and player feedback.
@@ -90,16 +89,47 @@ For analyzing recent game reviews, summarizing the current state of the game and
 
 - `appid` (required): Steam game ID, e.g., `570` (Dota 2)
 
+## Development Guide
+To ensure all developers use consistent tooling and versions, we strongly recommend following this guide.
 
-## Development
+### Environment Setup & Package Manager
+Please make sure to check the packageManager field in the package.json file, and use either Corepack or the explicitly specified version of the corresponding package manager.
 
-```bash
-# Install dependencies
-npm install
+#### First-time Corepack Setup (Optional):
 
-# Build project
-npm run build
+1. Check if Corepack is Installed
 
-# Run service
-npm start
+    For Node.js v18 and later, Corepack should be built-in. You can check it using:
+
+```
+npm list -g --depth=0 | grep corepack
+```
+
+2. Install Corepack
+
+    If the command above not show Corepack, you can install the latest version of Corepack globally:
+
+```
+npm install corepack@latest -g
+```
+
+If any errors occur during this process or when enabling Corepack later, try resolving them by running the command above.
+
+3. Enable Corepack Management for a Specific Package Manager
+
+    Once Corepack is installed and present, you need to enable its automated management for the package manager used by the project. For instance, if our project uses pnpm (please check the packageManager field in package.json to confirm), run:
+
+```
+corepack enable pnpm
+```
+
+### Getting Started
+1. Install Dependencies
+```
+pnpm install
+```
+
+2. Start the Development Server
+```
+pnpm dev
 ```

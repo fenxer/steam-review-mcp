@@ -1,22 +1,18 @@
 {
   "name": "steam-review-mcp",
-  "version": "1.0.2",
-  "description": "Get reviews from steam store with appid",
-  "main": "build/index.js",
   "type": "module",
-  "bin": {
-    "steam-review-mcp": "./build/index.js"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "node build/index.js",
-    "dev": "tsc && node build/index.js",
-    "prepublishOnly": "npm run build"
-  },
+  "version": "1.0.2",
+  "packageManager": "pnpm@10.11.0",
+  "description": "Get reviews from steam store with appid",
+  "author": "fenx <fenxer@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/fenxer/steam-review-mcp#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fenxer/steam-review-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fenxer/steam-review-mcp/issues"
   },
   "keywords": [
     "mcp",
@@ -24,24 +20,40 @@
     "review",
     "modelcontextprotocol"
   ],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fenxer/steam-review-mcp/issues"
-  },
-  "homepage": "https://github.com/fenxer/steam-review-mcp#readme",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.7.0",
-    "zod": "^3.24.2"
-  },
-  "devDependencies": {
-    "@types/node": "^22.13.10",
-    "typescript": "^5.8.2"
+  "main": "build/index.mjs",
+  "module": "build/index.mjs",
+  "bin": {
+    "steam-review-mcp": "index.js"
   },
   "files": [
-    "build/**/*"
+    "build",
+    "index.js"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "npx tsc --noEmit && unbuild",
+    "stub": "unbuild --stub",
+    "start": "node build/index.mjs",
+    "dev": "node scripts/check-build.mjs && pnpm run start",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.4",
+    "entities": "^6.0.0",
+    "ofetch": "^1.4.1",
+    "striptags": "^3.2.0",
+    "zod": "^3.25.7"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.13.1",
+    "@types/node": "^22.15.19",
+    "eslint": "^9.27.0",
+    "type-fest": "^4.41.0",
+    "typescript": "^5.8.3",
+    "unbuild": "^3.5.0",
+    "vitest": "^3.1.4"
   }
 }
