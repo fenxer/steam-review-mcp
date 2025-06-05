@@ -6,6 +6,8 @@ Access Steam game reviews using Model Context Protocol (MCP).
 
 [![smithery badge](https://smithery.ai/badge/@fenxer/steam-review-mcp)](https://smithery.ai/server/@fenxer/steam-review-mcp)
 
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](https://cursor.com/install-mcp?name=steam-review-mcp&config=eyJjb21tYW5kIjoibnB4IHN0ZWFtLXJldmlldy1tY3AifQ%3D%3D)
+
 <a href="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp/badge" />
 </a>
