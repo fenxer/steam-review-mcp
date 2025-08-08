@@ -21,6 +21,13 @@ This is a Model Context Protocol (MCP) server that provides Steam game review re
 - Vitest for unit testing
 - Tests located alongside source files (`.spec.ts` suffix)
 
+## Spec Mode
+
+When a prompt explicitly mentions "spec mode", strictly follow the guidelines and requirements documented in `.context/SPEC.md`.
+
+For detailed specification mode rules and procedures, see:
+- **Spec Mode Guidelines**: `.context/SPEC.md` - Complete specification-driven development workflow
+
 ## Architecture & Code Standards
 
 For detailed information, see:
