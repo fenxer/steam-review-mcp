@@ -2,7 +2,7 @@
   "name": "steam-review-mcp",
   "type": "module",
   "version": "1.0.2",
-  "packageManager": "pnpm@10.11.0",
+  "packageManager": "pnpm@10.14.0",
   "description": "Get reviews from steam store with appid",
   "author": "fenx <fenxer@gmail.com>",
   "license": "MIT",
@@ -43,19 +43,19 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.11.4",
-    "entities": "^6.0.0",
+    "@modelcontextprotocol/sdk": "^1.17.2",
+    "entities": "^6.0.1",
     "ofetch": "^1.4.1",
     "striptags": "^3.2.0",
     "zod": "^3.25.7"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.13.1",
+    "@antfu/eslint-config": "^5.2.0",
     "@types/node": "^22.15.19",
-    "eslint": "^9.27.0",
+    "eslint": "^9.33.0",
     "type-fest": "^4.41.0",
-    "typescript": "^5.8.3",
-    "unbuild": "^3.5.0",
-    "vitest": "^3.1.4"
+    "typescript": "^5.9.2",
+    "unbuild": "^3.6.0",
+    "vitest": "^3.2.4"
   }
 }
