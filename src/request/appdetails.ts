@@ -1,6 +1,6 @@
 import type { Simplify } from 'type-fest'
 import { z } from 'zod'
-import { cleanHTMLText, steamFetch } from '../utils'
+import { sanitizeHTMLText, steamFetch } from '../utils'
 
 export const AppdetailsParamsSchema = z.object({
   appids: z.string().describe('Steam application ID'),
@@ -28,7 +28,7 @@ export async function getAppdetails(params: z.infer<typeof AppdetailsParamsSchem
     const desc = details[params.appids]?.data?.detailed_description
     return {
       name: details[params.appids]?.data?.name ?? '',
-      detailed_description: desc ? cleanHTMLText(desc) : '',
+      detailed_description: desc ? sanitizeHTMLText(desc) : '',
     }
   }
   catch (error: unknown) {

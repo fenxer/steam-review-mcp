@@ -5,6 +5,7 @@ import { decode } from 'entities'
 import { ofetch } from 'ofetch'
 import striptags from 'striptags'
 import { z } from 'zod'
+import { STEAM_BASEURL, USER_AGENT } from './consts'
 
 type PromptArgsRawShape = {
   [k: string]: ZodType<string, ZodTypeDef, string> | ZodOptional<ZodType<string, ZodTypeDef, string>>
@@ -12,33 +13,30 @@ type PromptArgsRawShape = {
 
 const registerType = z.enum(['registerTool', 'resource', 'prompt'])
 
+export function pipe(input: unknown, ...funcsOrValues: ((...args: any[]) => any)[]): any {
+  return funcsOrValues.reduce((acc, fn) => fn(acc), input)
+}
+
 // Helper function to clean and format review text for JSON
-export function cleanHTMLText(text: string): string {
+export function sanitizeHTMLText(text: string): string {
   if (!text)
     return ''
 
-  // Remove HTML tags
-  let cleanText = striptags(text)
-
-  // Decode HTML entities
-  cleanText = decode(cleanText)
-
-  // Handle newlines and other control characters
-  cleanText = cleanText.replace(/\r\n|\n|\r/g, '\\n')
-
-  // Remove quotes
-  cleanText = cleanText.replace(/["']/g, '')
-
-  // Replace multiple spaces with a single space
-  cleanText = cleanText.replace(/\s+/g, ' ')
-
-  return cleanText.trim()
+  return pipe(
+    text,
+    decode,
+    striptags,
+    (s: string) => s.replace(/\r\n|\n|\r/g, '\\n'),
+    (s: string) => s.replace(/["']/g, ''),
+    (s: string) => s.replace(/\s+/g, ' '),
+    (s: string) => s.trim(),
+  ) as string
 }
 
 // Helper function to handle any request to the Steam API
 export const steamFetch = ofetch.create({
-  baseURL: 'https://store.steampowered.com/',
-  headers: { 'User-Agent': 'steam-mcp/1.0"' },
+  baseURL: STEAM_BASEURL,
+  headers: { 'User-Agent': USER_AGENT },
 })
 
 // Helper function to define a mcp tool
@@ -53,9 +51,9 @@ export function defineTool<
   outputSchema?: OutputSchema
   annotations?: ToolAnnotations
 }): {
-    type: typeof registerType.enum.registerTool
-    options: Parameters<McpServer['registerTool']>
-  } {
+  type: typeof registerType.enum.registerTool
+  options: Parameters<McpServer['registerTool']>
+} {
   return {
     type: registerType.enum.registerTool,
     options: [
@@ -86,9 +84,9 @@ export function definePrompt<ArgsSchema extends ReturnType<typeof z.object<Promp
   argsSchema?: ArgsSchema
   cb: PromptCallback<ArgsSchema extends ZodType ? ArgsSchema['shape'] : ArgsSchema>
 }): {
-    type: typeof registerType.enum.prompt
-    options: Parameters<McpServer['prompt']>
-  } {
+  type: typeof registerType.enum.prompt
+  options: Parameters<McpServer['prompt']>
+} {
   return {
     type: registerType.enum.prompt,
     options: [args.name, args.description, args.argsSchema?.shape, args.cb].filter(v => v) as Parameters<McpServer['prompt']>,

@@ -3,7 +3,7 @@ import { getAppdetails } from './appdetails'
 
 describe('steam appdetails api', () => {
   it('should throw an error if appid is not found', async () => {
-    const appid = '1234567890'
+    const appid = '0123456789'
     await expect(getAppdetails({ appids: appid }))
       .rejects
       .toThrowError()

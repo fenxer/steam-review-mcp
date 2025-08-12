@@ -1,6 +1,6 @@
 import type { Simplify } from 'type-fest'
 import { z } from 'zod'
-import { cleanHTMLText, steamFetch } from '../utils'
+import { sanitizeHTMLText, steamFetch } from '../utils'
 
 export const AppreviewsParamsSchema = z.object({
   appid: z.string().describe('Steam application ID'),
@@ -75,7 +75,7 @@ export async function getAppreviews({
       review_score_desc: reviewsData.query_summary?.review_score_desc,
       total_positive: reviewsData.query_summary?.total_positive,
       total_negative: reviewsData.query_summary?.total_negative,
-      reviews: reviewsData.reviews.map(review => cleanHTMLText(review.review)),
+      reviews: reviewsData.reviews.map(review => sanitizeHTMLText(review.review)),
     }
   }
   catch (error: unknown) {
