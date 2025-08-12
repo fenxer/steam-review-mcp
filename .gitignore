@@ -131,4 +131,5 @@ dist
 .DS_Store
 /build
 
-/.cursor
+.cursor/*
+!.cursor/mcp.json

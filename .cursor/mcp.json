@@ -1,12 +1,13 @@
 {
-  "servers": {
-    "steam-review-mcp": {
+  "mcpServers": {
+    "service": {
       "type": "stdio",
       "command": "pnpm",
       "args": [
         "run",
         "start"
-      ]
+      ],
+      "env": {}
     }
   }
 }
