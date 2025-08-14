@@ -1,17 +1,12 @@
 import type { Simplify } from 'type-fest'
 import { z } from 'zod'
+import { appidSchema, languageSchema } from '../baseSchema'
 import { sanitizeHTMLText, steamFetch } from '../utils'
 
 export const AppreviewsParamsSchema = z.object({
-  appid: z.string().describe('Steam application ID'),
+  appid: appidSchema,
   filter: z.enum(['all', 'recent']).optional().describe('recent: sorted by creation time, updated: sorted by last updated time,all: (default) sorted by helpfulness, with sliding windows based on day_range parameter, will always find results to return.'),
-  language: z.enum([
-    'all', 'arabic', 'bulgarian', 'schinese', 'tchinese', 'czech', 'danish',
-    'dutch', 'english', 'finnish', 'french', 'german', 'greek', 'hungarian',
-    'indonesian', 'italian', 'japanese', 'koreana', 'norwegian', 'polish',
-    'portuguese', 'brazilian', 'romanian', 'russian', 'spanish', 'latam',
-    'swedish', 'thai', 'turkish', 'ukrainian', 'vietnamese',
-  ]).optional().describe('Language filter (e.g. english, french, schinese). Default is all languages.'),
+  language: languageSchema,
   day_range: z.number().optional().describe('range from now to n days ago to look for helpful reviews. Only applicable for the all filter.'),
   cursor: z.string().optional().describe('reviews are returned in batches of 20, so pass * for the first set, then the value of cursor that was returned in the response for the next set, etc. Note that cursor values may contain characters that need to be URLEncoded for use in the querystring.'),
   review_type: z.string().optional().describe('all:all reviews (default), positive: only positive reviews, negative: only negative reviews'),
