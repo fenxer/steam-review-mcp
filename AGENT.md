@@ -28,8 +28,13 @@ When a prompt explicitly mentions "spec mode", strictly follow the guidelines an
 For detailed specification mode rules and procedures, see:
 - **Spec Mode Guidelines**: `.context/SPEC.md` - Complete specification-driven development workflow
 
-## Architecture & Code Standards
+## Code Rules
 
-For detailed information, see:
-- **Architecture**: `.context/ARCHITECTURE.md` - Project overview, tech stack, and system architecture
-- **Code Rules**: `.context/CODERULES.md` - Code standards and linting guidelines
+**IMPORTANT**: When making any changes to the current codebase, strictly follow the requirements specified in `.context/CODERULES.md`. This includes code standards, type definitions, ESM usage, linting practices, and project organization guidelines.
+
+After each code change, automatically verify that the modifications comply with the code rules. If any violations are detected, immediately adjust the code to meet the standards before proceeding.
+
+## Architecture
+
+For detailed project overview, tech stack, and system architecture, see:
+- **Architecture**: `.context/ARCHITECTURE.md`
