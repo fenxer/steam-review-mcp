@@ -40,7 +40,8 @@
     "test": "vitest run",
     "prepublishOnly": "pnpm run build",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "sync-block": "node scripts/sync-block.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.2",
@@ -53,7 +54,10 @@
   "devDependencies": {
     "@antfu/eslint-config": "^5.2.0",
     "@types/node": "^22.15.19",
+    "change-case": "^5.4.4",
+    "es-module-lexer": "^1.7.0",
     "eslint": "^9.33.0",
+    "tinyglobby": "^0.2.14",
     "type-fest": "^4.41.0",
     "typescript": "^5.9.2",
     "unbuild": "^3.6.0",

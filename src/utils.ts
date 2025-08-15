@@ -11,7 +11,7 @@ type PromptArgsRawShape = {
   [k: string]: ZodType<string, ZodTypeDef, string> | ZodOptional<ZodType<string, ZodTypeDef, string>>
 }
 
-const registerType = z.enum(['registerTool', 'resource', 'prompt'])
+const blockType = z.enum(['tool', 'resource', 'prompt'])
 
 export function pipe(input: unknown, ...funcsOrValues: ((...args: any[]) => any)[]): any {
   return funcsOrValues.reduce((acc, fn) => fn(acc), input)
@@ -51,11 +51,11 @@ export function defineTool<
   outputSchema?: OutputSchema
   annotations?: ToolAnnotations
 }): {
-  type: typeof registerType.enum.registerTool
+  type: typeof blockType.enum.tool
   options: Parameters<McpServer['registerTool']>
 } {
   return {
-    type: registerType.enum.registerTool,
+    type: blockType.enum.tool,
     options: [
       args.name,
       {
@@ -64,31 +64,32 @@ export function defineTool<
         outputSchema: args.outputSchema?.shape,
         annotations: args.annotations,
       },
-      async (...params) => {
-        try {
-          return await args.cb(...params)
-        }
-        catch (error: unknown) {
-          console.error(error)
-          throw error
-        }
-      },
+      args.cb.bind(null),
     ] as const,
   }
 }
 
 // Helper function to define a mcp prompt
-export function definePrompt<ArgsSchema extends ReturnType<typeof z.object<PromptArgsRawShape>> | undefined>(args: {
+export function definePrompt<ArgsSchema extends ReturnType<typeof z.object<PromptArgsRawShape>>>(args: {
   name: string
   description?: string
   argsSchema?: ArgsSchema
-  cb: PromptCallback<ArgsSchema extends ZodType ? ArgsSchema['shape'] : ArgsSchema>
+  cb: PromptCallback<ArgsSchema['shape']>
 }): {
-  type: typeof registerType.enum.prompt
-  options: Parameters<McpServer['prompt']>
+  type: typeof blockType.enum.prompt
+  options: Parameters<McpServer['registerPrompt']>
 } {
   return {
-    type: registerType.enum.prompt,
-    options: [args.name, args.description, args.argsSchema?.shape, args.cb].filter(v => v) as Parameters<McpServer['prompt']>,
+    type: blockType.enum.prompt,
+    options: [
+      args.name,
+      {
+        description: args.description,
+        argsSchema: args.argsSchema?.shape,
+      },
+      args.cb.bind(null),
+    ] as const,
   }
 }
+
+export type MCPBlock = (ReturnType<typeof defineTool> | ReturnType<typeof definePrompt>)
