@@ -45,19 +45,19 @@ Each specification file contains three main parts:
 **Purpose**: Initial specification creation and planning phase
 **Workflow**: Requirements gathering → Design planning → Implementation planning
 
-**📖 Complete Guide**: @.context/spec/draft-planning-workflow.md
+**📖 Complete Guide**: .context/spec/draft-planning-workflow.md
 
 ### Status: In Progress
 **Purpose**: Active implementation following the specification
 **Workflow**: Implementation execution → Progress tracking → Dynamic plan adjustments
 
-**📖 Complete Guide**: @.context/spec/in-progress-workflow.md
+**📖 Complete Guide**: .context/spec/in-progress-workflow.md
 
 ### Status: Completed
 **Purpose**: Post-completion documentation and archival
 **Workflow**: Final validation → Documentation → Archive
 
-**📖 Complete Guide**: @.context/spec/completed-workflow.md
+**📖 Complete Guide**: .context/spec/completed-workflow.md
 
 ## Status-Based Routing
 
@@ -65,21 +65,21 @@ Choose your workflow based on your current spec status:
 
 | Current Status | Next Action | Guide |
 |---|---|---|
-| **No spec exists** | Create new specification | @.context/spec/draft-planning-workflow.md |
-| **Draft/Planning** | Complete planning and begin implementation | @.context/spec/draft-planning-workflow.md |
-| **In Progress** | Continue implementation and track progress | @.context/spec/in-progress-workflow.md |
-| **Completed** | Archive and document lessons learned | @.context/spec/completed-workflow.md |
+| **No spec exists** | Create new specification | .context/spec/draft-planning-workflow.md |
+| **Draft/Planning** | Complete planning and begin implementation | .context/spec/draft-planning-workflow.md |
+| **In Progress** | Continue implementation and track progress | .context/spec/in-progress-workflow.md |
+| **Completed** | Archive and document lessons learned | .context/spec/completed-workflow.md |
 
 ## Modification Rules
 
 ### Core Principle: Immutability of Completed Work
 Once progress tracking shows a task as completed, the original requirements and design for that task become **immutable**.
 
-**📖 Detailed Modification Rules**: @.context/spec/modification-rules.md
+**📖 Detailed Modification Rules**: .context/spec/modification-rules.md
 
 ## File Format Standards
 
-**📖 Detailed Format Requirements**: @.context/spec/format-standards.md
+**📖 Detailed Format Requirements**: .context/spec/format-standards.md
 
 ## ⚠️ SPEC STANDARDS REVIEW GATE
 
@@ -98,7 +98,7 @@ When modifying spec standards or workflows:
 3. **Request Review**: Notify appropriate reviewer
 4. **Block Usage**: No spec workflows until review approved and archived
 
-**📖 Review Process Details**: @.context/spec/review-process.md
+**📖 Review Process Details**: .context/spec/review-process.md
 
 ### Workflow Blocking
 **CRITICAL**: When PENDING review files exist in `.context/spec/review/`, all spec mode workflows are blocked to ensure standards consistency.

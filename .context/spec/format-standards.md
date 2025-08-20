@@ -261,5 +261,5 @@ Resolved Issues:
 
 ### Cross-References
 - Reference other spec files using relative paths
-- Use `@.context/spec/filename.md` format for internal references
+- Use `.context/spec/filename.md` format for internal references
 - Ensure all links and references are valid and up-to-date

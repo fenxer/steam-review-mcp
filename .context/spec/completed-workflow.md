@@ -89,12 +89,12 @@ If changes are needed to completed work:
 **VIOLATION CONSEQUENCES**: Any direct modifications to completed specifications will be immediately rejected and flagged for correction.
 
 ### Required ADDENDUM Process
-1. **MANDATORY**: Follow "ADDENDUM System" section in @.context/spec/modification-rules.md
+1. **MANDATORY**: Follow "ADDENDUM System" section in .context/spec/modification-rules.md
 2. **MANDATORY**: Use exact file naming: `ADDENDUM-{original-spec-id}-{sequence}-{description}.md`
 3. **MANDATORY**: Include proper references to original completed work
 4. **MANDATORY**: Follow complete specification workflow for new additions
 
-**📖 STRICT COMPLIANCE REQUIRED**: @.context/spec/modification-rules.md
+**📖 STRICT COMPLIANCE REQUIRED**: .context/spec/modification-rules.md
 
 ### Enforcement
 - All completed specifications are protected from modification

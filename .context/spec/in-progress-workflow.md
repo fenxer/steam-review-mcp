@@ -88,14 +88,14 @@ Phase 1: Core Infrastructure
 
 ## ⚠️ CRITICAL: Modification Rules During Execution
 
-**STRICT COMPLIANCE REQUIRED**: All modifications MUST follow the formal process defined in @.context/spec/modification-rules.md
+**STRICT COMPLIANCE REQUIRED**: All modifications MUST follow the formal process defined in .context/spec/modification-rules.md
 
 ### Core Principle: Immutability of Completed Work
 Once a task is marked as completed, its original requirements and design become **immutable**.
 
 ### For Uncompleted Tasks
 - ✅ **Allowed**: Direct modification of Implementation Plan
-- ⚠️ **MANDATORY**: Follow "In Progress Status → For Uncompleted Tasks" process in @.context/spec/modification-rules.md
+- ⚠️ **MANDATORY**: Follow "In Progress Status → For Uncompleted Tasks" process in .context/spec/modification-rules.md
 - ⚠️ **REQUIRED**: Document ALL changes in Change Log with:
   - **Reason** (before modification)
   - **Authorized by** (before modification)
@@ -104,7 +104,7 @@ Once a task is marked as completed, its original requirements and design become 
 
 ### For Completed Tasks
 - ❌ **STRICTLY PROHIBITED**: Modifying original requirements or design
-- ⚠️ **MANDATORY**: Use ADDENDUM system - follow "ADDENDUM System" in @.context/spec/modification-rules.md
+- ⚠️ **MANDATORY**: Use ADDENDUM system - follow "ADDENDUM System" in .context/spec/modification-rules.md
 - ⚠️ **REQUIRED**: Create new specification file with proper ADDENDUM naming convention
 
 ### Change Log Process - MANDATORY COMPLIANCE
@@ -118,11 +118,11 @@ Once a task is marked as completed, its original requirements and design become 
    - **Change**: Specific modifications made to original plan
    - **Impact**: Effects on timeline, dependencies, completed tasks
 
-3. **Format Compliance**: MUST use exact template from @.context/spec/modification-rules.md
+3. **Format Compliance**: MUST use exact template from .context/spec/modification-rules.md
 
 **⚠️ VIOLATION CONSEQUENCES**: Modifications without proper documentation will be rejected and must be corrected.
 
-**📖 MANDATORY REFERENCE**: @.context/spec/modification-rules.md
+**📖 MANDATORY REFERENCE**: .context/spec/modification-rules.md
 
 ## Transition to Completion
 
@@ -130,4 +130,4 @@ When all implementation tasks are complete:
 1. Validate all success criteria are met
 2. Complete final testing and validation
 3. Update status to "Completed"
-4. Follow @.context/spec/completed-workflow.md
+4. Follow .context/spec/completed-workflow.md

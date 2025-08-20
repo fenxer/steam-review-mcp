@@ -30,7 +30,7 @@
 
 ## File Structure Requirements
 
-**📖 Detailed Format**: @.context/spec/format-standards.md
+**📖 Detailed Format**: .context/spec/format-standards.md
 
 ### Part 1: Requirements (Required)
 - **Original Request**: Verbatim user requirements
@@ -71,4 +71,4 @@ When planning is complete:
 1. Review all sections for completeness
 2. Validate task identifiers are consistent
 3. Update status to "In Progress"
-4. Begin following @.context/spec/in-progress-workflow.md
+4. Begin following .context/spec/in-progress-workflow.md

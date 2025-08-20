@@ -7,8 +7,8 @@ Once progress tracking shows a task as completed, the original requirements and 
 ## Modification Process by Status
 
 **WORKFLOW INTEGRATION**: These rules are integrated into status-specific workflows:
-- **In Progress**: @.context/spec/in-progress-workflow.md
-- **Completed**: @.context/spec/completed-workflow.md
+- **In Progress**: .context/spec/in-progress-workflow.md
+- **Completed**: .context/spec/completed-workflow.md
 
 ### Draft/Planning Status
 **Scope**: Full modification allowed
