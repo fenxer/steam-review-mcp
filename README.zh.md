@@ -4,6 +4,14 @@
 
 使用 Model Context Protocol (MCP) 获取 Steam 游戏评测。
 
+[![MCP Badge](https://lobehub.com/badge/mcp/fenxer-steam-review-mcp)](https://lobehub.com/mcp/fenxer-steam-review-mcp)
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](https://cursor.com/install-mcp?name=steam-review-mcp&config=eyJjb21tYW5kIjoibnB4IHN0ZWFtLXJldmlldy1tY3AifQ%3D%3D)
+
+<a href="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@fenxer/steam-review-mcp/badge" />
+</a>
+
 ## 功能
 
 帮助 LLM 获取 Steam 游戏的评测和游戏信息：
