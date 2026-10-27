@@ -1,6 +1,6 @@
 {
   "name": "steam-review-mcp",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Get reviews from steam store with appid",
   "main": "build/index.js",
   "type": "module",
@@ -8,7 +8,7 @@
     "steam-review-mcp": "./build/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsc && node --test test/*.test.js",
     "build": "tsc",
     "start": "node build/index.js",
     "dev": "tsc && node build/index.js",
@@ -31,8 +31,8 @@
   },
   "homepage": "https://github.com/fenxer/steam-review-mcp#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.7.0",
-    "zod": "^3.24.2"
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
@@ -42,6 +42,6 @@
     "build/**/*"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   }
 }

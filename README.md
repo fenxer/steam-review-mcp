@@ -16,8 +16,8 @@ Access Steam game reviews using Model Context Protocol (MCP).
 
 Helps LLMs retrieve Steam game reviews and information:
 
-- Get game reviews (positive/negative counts, review scores, review content, etc.)
-- Get game basic information (name, detailed description)
+- Get one page of game reviews (scores, totals, cleaned review text, and the next cursor)
+- Get the store name and full description from `IStoreBrowseService/GetItems`
 - Analyze game reviews and summarize pros and cons
 
 ## Installation
@@ -55,23 +55,36 @@ or add：
 
 ### Tools
 
-This MCP service provides the `get_steam_review` tool, which retrieves reviews and game information by passing a Steam game appid.
+This MCP service provides the `get_steam_review` tool. Pass a Steam app id and the tool reads:
 
-For more details, check the Steamwork API: [User Reviews - Get List](https://partner.steamgames.com/doc/store/getreviews)
+- [IUserReviewsService/GetAppReviews](https://partner.steamgames.com/doc/webapi/IUserReviewsService)
+- [IStoreBrowseService/GetItems](https://steamapi.xpaw.me/IStoreBrowseService)
 
-The returned data contains two parts:
+`store.steampowered.com/appreviews` was disabled on 2026-10-22. Parameters use the old string names (`all`, `recent`, `steam`) and the server maps them into `input_json`.
+
+The tool returns text JSON and the same object as `structuredContent`:
 
 1. `game_reviews`:
-   - `success`: Whether the query was successful
-   - `review_score`: Review score
+   - `success`: `true` when Steam returned a response object
+   - `review_score`: Review score, or `null` when that page has no score
    - `review_score_desc`: Review score description
    - `total_positive`: Total positive reviews
    - `total_negative`: Total negative reviews
-   - `reviews`: All review text content (without other metadata)
+   - `total_reviews`: Positive plus negative totals
+   - `total_matching`: Reviews matching the filter
+   - `day_range_used`: Day range the Helpful filter actually searched
+   - `cursor`: Pass this back to fetch the next page
+   - `reviews`: Cleaned review text for this page
 
 2. `game_info`:
-   - `name`: Game name
-   - `detailed_description`: Detailed game description
+   - `name`: Store name
+   - `detailed_description`: Store description with BBCode removed
+
+An empty Steam `response` means no matching reviews. Aggregates are `null` and `reviews` is empty. Set `STEAM_WEB_API_KEY` only when you need the higher rate limit. The public methods work without it.
+
+### Code mode
+
+The server stays compatible with Cloudflare's single-tool code mode as an upstream SDK v1 server. `get_steam_review` publishes an output schema, read-only annotations, and `structuredContent`. A host can wrap this server with `codeMcpServer()`. This package does not replace its tools with a `code` tool, because that wrapper is host-side and current code mode still serves the legacy SDK v1 handler.
 
 ### Prompts
 

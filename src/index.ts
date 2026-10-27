@@ -1,206 +1,151 @@
 #!/usr/bin/env node
 
+import { pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import {
+  DISPLAY_LANGUAGES,
+  REVIEW_LANGUAGES,
+  fetchSteamReview,
+  type DisplayLanguage,
+  type PurchaseType,
+  type ReviewFilter,
+  type ReviewLanguage,
+  type ReviewQuery,
+  type ReviewType,
+  type SteamReviewResult,
+} from "./steam.js";
 
-const STEAM_API_BASE = "https://store.steampowered.com/";
-const USER_AGENT = "steam-mcp/1.0";
-
-// Helper function to clean and format review text for JSON
-function cleanReviewText(text: string): string {
-  if (!text) return "";
-  
-  // Remove HTML tags
-  let cleanText = text.replace(/<\/?[^>]+(>|$)/g, "");
-  
-  // Decode common HTML entities
-  cleanText = cleanText.replace(/&amp;/g, "&")
-                       .replace(/&lt;/g, "<")
-                       .replace(/&gt;/g, ">")
-                       .replace(/&quot;/g, "")
-                       .replace(/&#39;/g, "")
-                       .replace(/&nbsp;/g, " ");
-  
-  // Handle newlines and other control characters
-  cleanText = cleanText.replace(/\r\n/g, "\\n")
-                       .replace(/\n/g, "\\n")
-                       .replace(/\r/g, "\\n");
-  
-  // Remove quotes
-  cleanText = cleanText.replace(/["']/g, "");
-  
-  // Replace multiple spaces with a single space
-  cleanText = cleanText.replace(/\s+/g, " ");
-  
-  // Trim extra spaces
-  return cleanText.trim();
-}
-
-// Create server instance
-const server = new McpServer({
-  name: "steam-review-mcp",
-  version: "1.0.0",
-});
-
-// Define the schema for the input parameters
-const SteamReviewParamsSchema = {
-  appid: z.string().describe("Steam application ID"),
-  filter: z.string().default("all").describe("recent: sorted by creation time, updated: sorted by last updated time,all: (default) sorted by helpfulness, with sliding windows based on day_range parameter, will always find results to return."),
-  language: z.enum([
-    "all", "arabic", "bulgarian", "schinese", "tchinese", "czech", "danish", 
-    "dutch", "english", "finnish", "french", "german", "greek", "hungarian", 
-    "indonesian", "italian", "japanese", "koreana", "norwegian", "polish", 
-    "portuguese", "brazilian", "romanian", "russian", "spanish", "latam", 
-    "swedish", "thai", "turkish", "ukrainian", "vietnamese"
-  ]).default("all").describe("Language filter (e.g. english, french, schinese). Default is all languages."),
-  day_range: z.number().default(365).describe("range from now to n days ago to look for helpful reviews. Only applicable for the all filter."),
-  cursor: z.string().default("*").describe("reviews are returned in batches of 20, so pass * for the first set, then the value of cursor that was returned in the response for the next set, etc. Note that cursor values may contain characters that need to be URLEncoded for use in the querystring."),
-  review_type: z.string().default("all").describe("all:all reviews (default), positive: only positive reviews, negative: only negative reviews"),
-  purchase_type: z.string().default("steam").describe("all: all reviews, non_steam_purchase: reviews written by users who did not pay for the product on Steam,steam: reviews written by users who paid for the product on Steam (default)"),
-  num_per_page: z.number().default(50).describe("number of reviews to get, max 100, default 50"),
+const outputSchema = {
+  game_reviews: z.object({
+    success: z.boolean(),
+    review_score: z.number().nullable(),
+    review_score_desc: z.string().nullable(),
+    total_positive: z.number().nullable(),
+    total_negative: z.number().nullable(),
+    total_reviews: z.number().nullable(),
+    total_matching: z.number().nullable(),
+    day_range_used: z.number().nullable(),
+    cursor: z.string().nullable(),
+    reviews: z.array(z.string()),
+  }),
+  game_info: z.object({
+    name: z.string().nullable(),
+    detailed_description: z.string().nullable(),
+  }),
 };
 
-// Add the tool to get steam reviews
-server.tool(
-  "get_steam_review",
-  "Retrieves reviews and game information for a specific Steam application. Returns formatted review data including review scores, positive/negative counts, review texts, and basic game information.",
-  SteamReviewParamsSchema,
-  async (params) => {
-    try {
-      // Fetch game reviews
-      const reviewsUrl = new URL(`appreviews/${params.appid}`, STEAM_API_BASE);
-      reviewsUrl.searchParams.append("json", "1");
-      reviewsUrl.searchParams.append("filter", params.filter);
-      reviewsUrl.searchParams.append("language", params.language);
-      reviewsUrl.searchParams.append("day_range", params.day_range.toString());
-      reviewsUrl.searchParams.append("cursor", params.cursor);
-      reviewsUrl.searchParams.append("review_type", params.review_type);
-      reviewsUrl.searchParams.append("purchase_type", params.purchase_type);
-      reviewsUrl.searchParams.append("num_per_page", params.num_per_page.toString());
-      
-      const reviewsResponse = await fetch(reviewsUrl, {
-        headers: { "User-Agent": USER_AGENT }
-      });
-      
-      if (!reviewsResponse.ok) {
-        throw new Error(`Failed to fetch reviews: ${reviewsResponse.statusText}`);
-      }
-      
-      const reviewsData = await reviewsResponse.json();
-      
-      // Extract required review information and review texts
-      const game_reviews = {
-        success: reviewsData.success,
-        review_score: reviewsData.query_summary?.review_score,
-        review_score_desc: reviewsData.query_summary?.review_score_desc,
-        total_positive: reviewsData.query_summary?.total_positive,
-        total_negative: reviewsData.query_summary?.total_negative,
-        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => cleanReviewText(review.review)) : []
-      };
-      
-      // Fetch game info
-      const infoUrl = new URL("api/appdetails", STEAM_API_BASE);
-      infoUrl.searchParams.append("appids", params.appid);
-      
-      const infoResponse = await fetch(infoUrl, {
-        headers: { "User-Agent": USER_AGENT }
-      });
-      
-      if (!infoResponse.ok) {
-        throw new Error(`Failed to fetch game info: ${infoResponse.statusText}`);
-      }
-      
-      const infoData = await infoResponse.json();
-      
-      // Extract required game information
-      const game_info = {
-        name: infoData[params.appid]?.data?.name,
-        detailed_description: infoData[params.appid]?.data?.detailed_description
-      };
-      
-      // To be compatible with models such as DeepSeek R1 and DeepSeek V3, convert the format
-      const formattedJsonData = JSON.stringify({ game_reviews, game_info }, null, 2);
-      
-      return {
-        content: [
-          {
-            type: "text",
-            text: formattedJsonData
-          }
-        ]
-      };
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-);
+const inputSchema = {
+  appid: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .describe("Steam application ID, for example 570."),
+  filter: z
+    .enum(["all", "recent", "updated", "funny"])
+    .default("all")
+    .describe(
+      "Sort order. all: helpful within day_range (default). recent: creation time. updated: last update. funny: funny votes.",
+    ),
+  language: z
+    .enum(REVIEW_LANGUAGES)
+    .default("all")
+    .describe(
+      "Review language. all means every language. Any other value is sent as a one-item languages list. Default is all.",
+    ),
+  day_range: z
+    .number()
+    .int()
+    .min(0)
+    .max(365)
+    .default(365)
+    .describe(
+      "Helpful filter only. Days back from today. 0 means no limit. Maximum 365. Default 365.",
+    ),
+  cursor: z
+    .string()
+    .default("*")
+    .describe(
+      "Pass * for the first page, then the cursor returned by the previous call. The server encodes it inside input_json.",
+    ),
+  review_type: z
+    .enum(["all", "positive", "negative"])
+    .default("all")
+    .describe(
+      "all (default), positive, or negative. Score totals are only returned when this is all.",
+    ),
+  purchase_type: z
+    .enum(["steam", "all", "non_steam_purchase"])
+    .default("steam")
+    .describe(
+      "steam: purchased on Steam (default). all: every review. non_steam_purchase: not purchased on Steam.",
+    ),
+  num_per_page: z
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .default(50)
+    .describe("Reviews to return on this page. Minimum 1, maximum 100, default 50."),
+  display_language: z
+    .enum(DISPLAY_LANGUAGES)
+    .default("english")
+    .describe(
+      "Language of review_score_desc and the store description. Does not filter reviews. Default english.",
+    ),
+};
 
-// Add prompt for analyzing reviews
-server.prompt(
-  "summarize-reviews",
-  { appid: z.string().describe("Steam application ID") },
-  async ({ appid }) => {
-    try {
-      // Fetch game reviews and info
-      const reviewsUrl = new URL(`appreviews/${appid}`, STEAM_API_BASE);
-      reviewsUrl.searchParams.append("json", "1");
-      reviewsUrl.searchParams.append("filter", "all");
-      reviewsUrl.searchParams.append("language", "all");
-      reviewsUrl.searchParams.append("day_range", "365");
-      reviewsUrl.searchParams.append("cursor", "*");
-      reviewsUrl.searchParams.append("review_type", "all");
-      reviewsUrl.searchParams.append("purchase_type", "all");
-      reviewsUrl.searchParams.append("num_per_page", "50");
-      
-      const reviewsResponse = await fetch(reviewsUrl, {
-        headers: { "User-Agent": USER_AGENT }
-      });
-      
-      if (!reviewsResponse.ok) {
-        throw new Error(`Failed to fetch reviews: ${reviewsResponse.statusText}`);
-      }
-      
-      const reviewsData = await reviewsResponse.json();
-      
-      // Extract required review information and review texts
-      const game_reviews = {
-        success: reviewsData.success,
-        review_score: reviewsData.query_summary?.review_score,
-        review_score_desc: reviewsData.query_summary?.review_score_desc,
-        total_positive: reviewsData.query_summary?.total_positive,
-        total_negative: reviewsData.query_summary?.total_negative,
-        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => cleanReviewText(review.review)) : []
-      };
-      
-      // Fetch game info
-      const infoUrl = new URL("api/appdetails", STEAM_API_BASE);
-      infoUrl.searchParams.append("appids", appid);
-      
-      const infoResponse = await fetch(infoUrl, {
-        headers: { "User-Agent": USER_AGENT }
-      });
-      
-      if (!infoResponse.ok) {
-        throw new Error(`Failed to fetch game info: ${infoResponse.statusText}`);
-      }
-      
-      const infoData = await infoResponse.json();
-      
-      // Extract required game information
-      const game_info = {
-        name: infoData[appid]?.data?.name,
-        detailed_description: infoData[appid]?.data?.detailed_description
-      };
-      
-      // Return prompt with game data
-      return {
-        messages: [{
-          role: "user",
-          content: {
-            type: "text",
-            text: `You are an experienced video game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **pros** and **cons** from game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
+export interface ServerOptions {
+  fetchImpl?: typeof fetch;
+  apiKey?: string;
+}
+
+function queryFromParams(params: {
+  appid: string;
+  filter?: ReviewFilter;
+  language?: ReviewLanguage;
+  day_range?: number;
+  cursor?: string;
+  review_type?: ReviewType;
+  purchase_type?: PurchaseType;
+  num_per_page?: number;
+  display_language?: DisplayLanguage;
+}): ReviewQuery {
+  return {
+    appid: params.appid,
+    filter: params.filter ?? "all",
+    language: params.language ?? "all",
+    day_range: params.day_range ?? 365,
+    cursor: params.cursor ?? "*",
+    review_type: params.review_type ?? "all",
+    purchase_type: params.purchase_type ?? "steam",
+    num_per_page: params.num_per_page ?? 50,
+    display_language: params.display_language ?? "english",
+  };
+}
+
+function toolResult(result: SteamReviewResult) {
+  return {
+    content: [
+      {
+        type: "text" as const,
+        text: JSON.stringify(result, null, 2),
+      },
+    ],
+    structuredContent: result as unknown as Record<string, unknown>,
+  };
+}
+
+function toolError(error: unknown) {
+  const message = error instanceof Error ? error.message : "Steam request failed";
+  return {
+    isError: true as const,
+    content: [{ type: "text" as const, text: message }],
+  };
+}
+
+function summaryPrompt(result: SteamReviewResult): string {
+  return `You are an experienced video game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **pros** and **cons** from game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
                     ====
                     # Features
                     - Don't extract too much information from a single review; try to summarize from **multiple reviews and multiple perspectives**.
@@ -216,82 +161,12 @@ server.prompt(
                     - Con 2
                     The unordered list format should be arranged from top to bottom according to the **number of times each pro or con is mentioned**.
 
-                    Game Info: ${JSON.stringify(game_info, null, 2)}
-                    Game Reviews: ${JSON.stringify(game_reviews.reviews, null, 2)}`
-          }
-        }]
-      };
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-);
+                    Game Info: ${JSON.stringify(result.game_info, null, 2)}
+                    Game Reviews: ${JSON.stringify(result.game_reviews.reviews, null, 2)}`;
+}
 
-// Add prompt for analyzing recent reviews
-server.prompt(
-  "recent-reviews-analysis",
-  { appid: z.string().describe("Steam application ID") },
-  async ({ appid }) => {
-    try {
-      // Fetch game reviews and info
-      const reviewsUrl = new URL(`appreviews/${appid}`, STEAM_API_BASE);
-      reviewsUrl.searchParams.append("json", "1");
-      reviewsUrl.searchParams.append("filter", "recent");
-      reviewsUrl.searchParams.append("language", "all");
-      reviewsUrl.searchParams.append("day_range", "365");
-      reviewsUrl.searchParams.append("cursor", "*");
-      reviewsUrl.searchParams.append("review_type", "all");
-      reviewsUrl.searchParams.append("purchase_type", "all");
-      reviewsUrl.searchParams.append("num_per_page", "50");
-      
-      const reviewsResponse = await fetch(reviewsUrl, {
-        headers: { "User-Agent": USER_AGENT }
-      });
-      
-      if (!reviewsResponse.ok) {
-        throw new Error(`Failed to fetch reviews: ${reviewsResponse.statusText}`);
-      }
-      
-      const reviewsData = await reviewsResponse.json();
-      
-      // Extract required review information and review texts
-      const game_reviews = {
-        success: reviewsData.success,
-        review_score: reviewsData.query_summary?.review_score,
-        review_score_desc: reviewsData.query_summary?.review_score_desc,
-        total_positive: reviewsData.query_summary?.total_positive,
-        total_negative: reviewsData.query_summary?.total_negative,
-        reviews: reviewsData.reviews ? reviewsData.reviews.map((review: any) => cleanReviewText(review.review)) : []
-      };
-      
-      // Fetch game info
-      const infoUrl = new URL("api/appdetails", STEAM_API_BASE);
-      infoUrl.searchParams.append("appids", appid);
-      
-      const infoResponse = await fetch(infoUrl, {
-        headers: { "User-Agent": USER_AGENT }
-      });
-      
-      if (!infoResponse.ok) {
-        throw new Error(`Failed to fetch game info: ${infoResponse.statusText}`);
-      }
-      
-      const infoData = await infoResponse.json();
-      
-      // Extract required game information
-      const game_info = {
-        name: infoData[appid]?.data?.name,
-        detailed_description: infoData[appid]?.data?.detailed_description
-      };
-      
-      // Return prompt with game data
-      return {
-        messages: [{
-          role: "user",
-          content: {
-            type: "text",
-            text: `You are an experienced video game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **recent performance and player feedback** from the most recent game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
+function recentPrompt(result: SteamReviewResult): string {
+  return `You are an experienced video game industry professional and game developer who has played many games on Steam. You are skilled at summarizing a game's **recent performance and player feedback** from the most recent game reviews {{game_reviews}} combined with game descriptions {{game_info}}. List them in an unordered list format.
                   ====
                   # Features
                   - Don't extract too much information from a single review; try to summarize from **multiple reviews and multiple perspectives**.
@@ -310,18 +185,126 @@ server.prompt(
                   - Key point about current state of the game
                   The unordered list format should be arranged from top to bottom according to the **number of times each point is mentioned**.
 
-                  Game Info: ${JSON.stringify(game_info, null, 2)}
-                  Game Reviews: ${JSON.stringify(game_reviews.reviews, null, 2)}`
-          }
-        }]
-      };
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-);
+                  Game Info: ${JSON.stringify(result.game_info, null, 2)}
+                  Game Reviews: ${JSON.stringify(result.game_reviews.reviews, null, 2)}`;
+}
 
-// Start the server
-const transport = new StdioServerTransport();
-server.connect(transport).catch(console.error);
+export function createServer(options: ServerOptions = {}): McpServer {
+  const server = new McpServer({
+    name: "steam-review-mcp",
+    version: "1.1.0",
+  });
+  const apiKey = options.apiKey ?? process.env.STEAM_WEB_API_KEY;
+
+  server.registerTool(
+    "get_steam_review",
+    {
+      title: "Get Steam reviews",
+      description:
+        "Retrieves one page of Steam reviews and store information for an application. Uses IUserReviewsService/GetAppReviews and IStoreBrowseService/GetItems. Returns scores, totals, cleaned review text, the next cursor, and the store name plus description.",
+      inputSchema,
+      outputSchema,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
+    },
+    async (params) => {
+      try {
+        const result = await fetchSteamReview(queryFromParams(params), {
+          fetchImpl: options.fetchImpl,
+          apiKey,
+        });
+        return toolResult(result);
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+
+  server.registerPrompt(
+    "summarize-reviews",
+    {
+      title: "Summarize reviews",
+      description: "Summarize the pros and cons of a Steam game from its reviews.",
+      argsSchema: {
+        appid: z
+          .string()
+          .regex(/^[1-9]\d*$/)
+          .describe("Steam application ID"),
+      },
+    },
+    async ({ appid }) => {
+      const result = await fetchSteamReview(
+        queryFromParams({
+          appid,
+          filter: "all",
+          language: "all",
+          purchase_type: "all",
+          num_per_page: 50,
+        }),
+        { fetchImpl: options.fetchImpl, apiKey },
+      );
+      return {
+        messages: [
+          {
+            role: "user" as const,
+            content: { type: "text" as const, text: summaryPrompt(result) },
+          },
+        ],
+      };
+    },
+  );
+
+  server.registerPrompt(
+    "recent-reviews-analysis",
+    {
+      title: "Recent reviews analysis",
+      description:
+        "Summarize recent player sentiment from the newest Steam reviews.",
+      argsSchema: {
+        appid: z
+          .string()
+          .regex(/^[1-9]\d*$/)
+          .describe("Steam application ID"),
+      },
+    },
+    async ({ appid }) => {
+      const result = await fetchSteamReview(
+        queryFromParams({
+          appid,
+          filter: "recent",
+          language: "all",
+          purchase_type: "all",
+          num_per_page: 50,
+        }),
+        { fetchImpl: options.fetchImpl, apiKey },
+      );
+      return {
+        messages: [
+          {
+            role: "user" as const,
+            content: { type: "text" as const, text: recentPrompt(result) },
+          },
+        ],
+      };
+    },
+  );
+
+  return server;
+}
+
+const isDirectRun =
+  process.argv[1] !== undefined &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectRun) {
+  const server = createServer();
+  const transport = new StdioServerTransport();
+  server.connect(transport).catch((error: unknown) => {
+    const message = error instanceof Error ? error.message : "MCP server failed to start";
+    console.error(message);
+  });
+}

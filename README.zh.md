@@ -16,8 +16,8 @@
 
 帮助 LLM 获取 Steam 游戏的评测和游戏信息：
 
-- 获取游戏评测（正面/负面评价数量、评测分数、评测内容等）
-- 获取游戏基本信息（名称、详细描述）
+- 获取一页游戏评测（分数、总数、清洗后的评测正文，以及下一页 cursor）
+- 从 `IStoreBrowseService/GetItems` 获取商店名称和完整简介
 - 分析游戏评测，总结游戏的优缺点
 
 ## 安装
@@ -47,23 +47,36 @@ npx steam-review-mcp
 
 ### 工具 (Tools)
 
-这个 MCP 服务提供了 `get_steam_review` 工具，可以通过传入 Steam 游戏的 appid 来获取评测和游戏信息。
+这个 MCP 服务提供了 `get_steam_review` 工具。传入 Steam app id 后，它会读取：
 
-详细可查看 Steamwork API: [User Reviews - Get List](https://partner.steamgames.com/doc/store/getreviews)
+- [IUserReviewsService/GetAppReviews](https://partner.steamgames.com/doc/webapi/IUserReviewsService)
+- [IStoreBrowseService/GetItems](https://steamapi.xpaw.me/IStoreBrowseService)
 
-返回的数据包含两部分：
+`store.steampowered.com/appreviews` 已于 2026-10-22 停用。参数仍使用原来的字符串（`all`、`recent`、`steam`），由服务端映射进 `input_json`。
+
+工具同时返回文本 JSON 和相同的 `structuredContent`：
 
 1. `game_reviews`：
-   - `success`：查询是否成功
-   - `review_score`：评测分数
+   - `success`：Steam 返回了 `response` 对象时为 `true`
+   - `review_score`：评测分数；这一页没有分数时为 `null`
    - `review_score_desc`：评测分数描述
    - `total_positive`：正面评测总数
    - `total_negative`：负面评测总数
-   - `reviews`：所有评测的文本内容（不包含其他元数据）
+   - `total_reviews`：正面与负面合计
+   - `total_matching`：符合筛选条件的评测数
+   - `day_range_used`：Helpful 筛选实际搜索的天数
+   - `cursor`：取下一页时原样传回
+   - `reviews`：这一页清洗后的评测正文
 
 2. `game_info`：
-   - `name`：游戏名称
-   - `detailed_description`：游戏详细描述
+   - `name`：商店名称
+   - `detailed_description`：去掉 BBCode 后的商店简介
+
+Steam 的 `response` 为空表示没有匹配评测。此时汇总字段为 `null`，`reviews` 为空数组。只有需要更高频率限制时才设置 `STEAM_WEB_API_KEY`，公开接口不带 key 也能调用。
+
+### Code mode
+
+本服务保持为 SDK v1 的 stdio 上游，可被 Cloudflare 的单工具 code mode 包裹。`get_steam_review` 公布了输出 schema、只读注解和 `structuredContent`。宿主可以用 `codeMcpServer()` 包装它。这个包本身不把工具换成一个 `code` 工具，因为那一层属于宿主，而且当前 code mode 仍通过旧的 SDK v1 handler 提供服务。
 
 ### 提示模板 (Prompts)
 
