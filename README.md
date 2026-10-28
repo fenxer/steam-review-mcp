@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/fenxer-steam-review-mcp-badge.png)](https://mseep.ai/app/fenxer-steam-review-mcp)
+
 # Steam Review MCP
 
 **English** | [中文](./README.zh.md)
