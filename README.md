@@ -22,14 +22,6 @@ Helps LLMs retrieve Steam game reviews and information:
 
 ## Installation
 
-### Installing via Smithery
-
-To install Steam Review for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@fenxer/steam-review-mcp):
-
-```bash
-npx -y @smithery/cli install @fenxer/steam-review-mcp --client claude
-```
-
 Run it directly with npx:
 
 ```bash
